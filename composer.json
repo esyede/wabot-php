@@ -1,0 +1,28 @@
+{
+  "name": "esyede/wabot-php",
+  "description": "WhatsApp bot integration library (internal only)",
+  "type": "library",
+  "require": {
+    "php": ">=5.4.0",
+    "ext-curl": "*",
+    "ext-json": "*"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/esyede/wabot-php",
+  "support": {
+    "issues": "https://github.com/esyede/wabot-php/issues",
+    "source": "https://github.com/esyede/wabot-php"
+  },
+  "authors": [
+    {
+      "name": "Suyadi",
+      "email": "suyadi.1992@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Esyede\\Wabot\\": "src/"
+    }
+  }
+}
