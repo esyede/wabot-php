@@ -16,16 +16,18 @@ class Connection
         $this->request = new HttpRequest($accessKey, $baseUrl);
     }
 
-    public function scanQr(Closure $callback = null)
+    public function scanQr($sleep = 3, Closure $callback = null)
     {
+        sleep((int) $sleep);
+
         return $this->request
             ->withCallback($callback)
             ->get('instance/qr');
     }
 
-    public function getQrBase64(Closure $callback = null)
+    public function getQrBase64($sleep = 3, Closure $callback = null)
     {
-        sleep(3);
+        sleep((int) $sleep);
 
         return $this->request
             ->withCallback($callback)

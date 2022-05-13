@@ -59,14 +59,16 @@ print_r($connection->updateWebhook(
 )); die;
 
 // Get base64 qrCode
-$base64qrCode = $connection->getQrBase64(function ($response) use ($log) {
+$sleep = 3;
+$base64qrCode = $connection->getQrBase64($sleep, function ($response) use ($log) {
     $log->write(json_encode($response));
 });
 
 print_r($base64qrCode); die;
 
 // Get html qrCode
-$htmlQrCode = $connection->scanQr(function ($response) use ($log) {
+$sleep = 3;
+$htmlQrCode = $connection->scanQr($sleep, function ($response) use ($log) {
     $log->write(json_encode($response));
 });
 
