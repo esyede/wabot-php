@@ -12,11 +12,13 @@ class Request
     private $bodyType;
     private $payloads;
     private $callback;
+    private $userAgent;
 
     public function __construct($accessKey, $baseUrl)
     {
         $this->accessKey = $accessKey;
         $this->baseUrl = rtrim($baseUrl, '/');
+        $this->userAgent = 'Mozilla/5.0 (compatible; TripayBot/1.0; +https://tripay.co.id/developer)';
     }
 
     public function withHeader($key, $value)
@@ -76,6 +78,7 @@ class Request
         curl_setopt_array($ch, [
             CURLOPT_URL => $endpoint,
             CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_USERAGENT => $this->userAgent,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_HTTPHEADER => $this->headers,
         ]);

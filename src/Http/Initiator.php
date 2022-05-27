@@ -47,6 +47,7 @@ class Initiator
         $ch = curl_init();
         curl_setopt_array($ch, [
             CURLOPT_URL => $endpoint,
+            CURLOPT_USERAGENT => 'Mozilla/5.0 (compatible; TripayBot/1.0; +https://tripay.co.id/developer)',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'GET',
