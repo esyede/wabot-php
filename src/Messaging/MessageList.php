@@ -68,10 +68,9 @@ class MessageList
         $payloads->id = '';
         $payloads->msgdata = $msgData;
         $payloads->listType = 0;
-        $payloads = json_encode($payloads);
 
         return $this->request
-            ->withRawBody($payloads)
+            ->withRawBody(json_encode($payloads))
             ->withCallback($callback)
             ->post('message/list');
     }

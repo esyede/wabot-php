@@ -52,20 +52,20 @@ class Contact
 
     public function send(Closure $callback = null)
     {
-        $vcard = [
-            'phoneNumber' => $this->phoneNumber,
-            'fullName' => $this->fullName,
-            'displayName' => $this->displayName,
-            'organization' => $this->organizationName,
-        ];
+        $vcard = new stdClass;
+
+        $vcard->phoneNumber = $this->phoneNumber;
+        $vcard->fullName = $this->fullName;
+        $vcard->displayName = $this->displayName;
+        $vcard->organization = $this->organizationName;
 
         $payloads = new stdClass;
+
         $payloads->id = '';
-        $payloads->vcard = (object) $vcard;
-        $payloads = json_encode($payloads);
+        $payloads->vcard = $vcard;
 
         return $this->request
-            ->withRawBody($payloads)
+            ->withRawBody(json_encode($payloads))
             ->withCallback($callback)
             ->post('message/contact');
     }

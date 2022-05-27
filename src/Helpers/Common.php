@@ -35,6 +35,8 @@ class Common
 
         $position = strpos($subject, $search);
 
-        return (false === $position) ? $subject : substr_replace($subject, $replace, $position, strlen($search));
+        return (false === $position)
+            ? $subject
+            : substr_replace($subject, $replace, $position, strlen($search));
     }
 }
