@@ -63,7 +63,7 @@ class Request
 
     public function delete($endpoint)
     {
-        return $this->request('delete', $endpoint, $payloads);
+        return $this->request('delete', $endpoint, $this->payloads);
     }
 
     public function request($method, $endpoint)

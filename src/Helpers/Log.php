@@ -36,7 +36,7 @@ class Log
 
     private function date($format)
     {
-        return (new DateTime($format, new DateTimeZone($this->timezone)))
+        return (new DateTime('now', new DateTimeZone($this->timezone)))
             ->format($format);
     }
 }
