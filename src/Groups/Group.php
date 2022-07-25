@@ -18,15 +18,15 @@ class Group
         $this->request = $request;
     }
 
-    public function create($groupName, array $participatPhoneNumbers, Closure $callback = null)
+    public function create($groupName, array $participantPhoneNumbers, Closure $callback = null)
     {
-        $participatPhoneNumbers = array_map(function ($phoneNumber) {
+        $participantPhoneNumbers = array_map(function ($phoneNumber) {
             return Common::toIndonesianPhonePrefix($phoneNumber);
-        }, array_values($participatPhoneNumbers));
+        }, array_values($participantPhoneNumbers));
 
         $payloads = (object) [
             'name' => $groupName,
-            'users' => $participatPhoneNumbers,
+            'users' => $participantPhoneNumbers,
         ];
 
         return $this->request
