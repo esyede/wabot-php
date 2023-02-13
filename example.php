@@ -2,84 +2,44 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-// Setup
-use Esyede\Wabot\Http\Initiator;
-use Esyede\Wabot\Helpers\Log;
-
-$log = new Log(__DIR__);
-
-$initiator = new Initiator('https://my-wa-node.com');
-$initiator
-    ->withWebhookUrl('https://my-wa-site/webhook.php')
-    ->withAllowedWebhookEvents([
-        'device:qr',
-        'device:connecting',
-        'device:reconnecting',
-        'device:connected',
-        'device:disconnected',
-        'message:new',
-    ])
-    ->withCallback(function ($response) use ($log) {
-        $log->write($response);
-    });
-
-$key = null;
-
-// Ambil dari storage jika key sudah tersimpan di storage. Ambil dari api jika belum
-if (is_file($file = __DIR__ . '/key.txt') && strlen(file_get_contents($file)) > 25) {
-    $key = json_decode(file_get_contents($file));
-} else {
-    $key = $initiator->getKey();
-}
-
-$baseUrl = $initiator->getBaseUrl();
-
-
-// Buat instance koneksi dan request
 use Esyede\Wabot\Http\Request;
 use Esyede\Wabot\Connections\Connection;
+use Esyede\Wabot\Helpers\Log;
+use Esyede\Wabot\Messaging\Message;
 
+$log = new Log(__DIR__);
+$baseUrl = 'http://localhost:3333';
+
+$key = '11111';
+$phone = '085330684679';
+
+// Buat instance koneksi dan request
+
+$request = new Request($baseUrl);
 $connection = new Connection($key, $baseUrl);
-$request = new Request($key, $baseUrl);
 
-// print_r($connection->restore('ggh7y838-8347-hjbcvj-dhb')); die;
-// print_r($connection->restoreAll()); die;
-
-// Test update webhook
-print_r($connection->updateWebhook(
-    'https://esyede.my.id/wa.php',
-    [
-        'device:qr',
-        'device:connecting',
-        'device:reconnecting',
-        'device:connected',
-        'device:disconnected',
-        'message:new',
-    ]
-)); die;
+$connection->init();
 
 // Get base64 qrCode
 $sleep = 3;
-$base64qrCode = $connection->getQrBase64($sleep, function ($response) use ($log) {
-    $log->write(json_encode($response));
-});
+$base64qrCode = $connection->getQrBase64([], $sleep);
+$base64qrCode = $connection->getInfo([])['raw'];
 
 print_r($base64qrCode); die;
 
 // Get html qrCode
-$sleep = 3;
-$htmlQrCode = $connection->scanQr($sleep, function ($response) use ($log) {
+$sleep = 0;
+$htmlQrCode = $connection->scanQr([], $sleep, function ($response) use ($log) {
     $log->write(json_encode($response));
 });
 
 print_r($htmlQrCode); die;
 
-use Esyede\Wabot\Messaging\Message;
 
-$message = new Message($initiator, $request);
+$message = new Message($connection, $request);
 
 
-$result = $message->text('085707839650', 'Test text message', function ($response) use ($log) {
+$result = $message->text($phone, 'Test text message', function ($response) use ($log) {
     $log->write(json_encode($response));
 });
 
@@ -87,7 +47,7 @@ print_r($result); die;
 
 
 $file = __DIR__ . '/test.png';
-$result = $message->image('085707839650', $file, 'Test image message', function ($response) use ($log) {
+$result = $message->image($phone, $file, 'Test image message', function ($response) use ($log) {
     $log->write(json_encode($response));
 });
 
@@ -95,7 +55,7 @@ print_r($result); die;
 
 
 $file = __DIR__ . '/test.mp4';
-$result = $message->video('085707839650', $file, 'Test video message', function ($response) use ($log) {
+$result = $message->video($phone, $file, 'Test video message', function ($response) use ($log) {
     $log->write(json_encode($response));
 });
 
@@ -103,7 +63,7 @@ print_r($result); die;
 
 
 $file = __DIR__ . '/test.mp3';
-$result = $message->audio('085707839650', $file, function ($response) use ($log) {
+$result = $message->audio($phone, $file, function ($response) use ($log) {
     $log->write(json_encode($response));
 });
 
@@ -111,7 +71,7 @@ print_r($result); die;
 
 
 $file = __DIR__ . '/test.pdf';
-$result = $message->document('085707839650', $file, function ($response) use ($log) {
+$result = $message->document($phone, $file, function ($response) use ($log) {
     $log->write(json_encode($response));
 });
 
@@ -119,7 +79,7 @@ print_r($result); die;
 
 
 $file = 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/FullMoon2010.jpg/800px-FullMoon2010.jpg';
-$result = $message->mediaUrl('085707839650', $file, 'Test mediaUrl', function ($response) use ($log) {
+$result = $message->mediaUrl($phone, $file, 'Test mediaUrl', function ($response) use ($log) {
     $log->write(json_encode($response));
 });
 

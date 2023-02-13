@@ -2,7 +2,7 @@
 
 namespace Esyede\Wabot\Messaging;
 
-use Esyede\Wabot\Http\Initiator as HttpInitiator;
+use Esyede\Wabot\Connections\Connection;
 use Esyede\Wabot\Http\Request as HttpRequest;
 use Esyede\Wabot\Helpers\Common;
 use Closure;
@@ -10,16 +10,16 @@ use stdClass;
 
 class MediaWithButton
 {
-    private $initiator;
+    private $connection;
     private $request;
     private $headerTextCaption;
     private $buttons = [];
     private $footerTextCaption;
     private $imageUrl;
 
-    public function __construct(HttpInitiator $initiator, HttpRequest $request)
+    public function __construct(Connection $connection, HttpRequest $request)
     {
-        $this->initiator = $initiator;
+        $this->connection = $connection;
         $this->request = $request;
     }
 
@@ -89,6 +89,6 @@ class MediaWithButton
             ->withHeader('Content-Type', 'application/json')
             ->withJsonBody($payloads)
             ->withCallback($callback)
-            ->post('message/MediaButton');
+            ->post('message/MediaButton', ['key' => $this->connection->getDeviceKey()]);
     }
 }

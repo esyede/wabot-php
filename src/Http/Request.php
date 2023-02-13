@@ -6,17 +6,14 @@ use Closure;
 
 class Request
 {
-    private $accessKey;
     private $baseUrl;
     private $headers = [];
-    private $bodyType;
     private $payloads;
     private $callback;
     private $userAgent;
 
-    public function __construct($accessKey, $baseUrl)
+    public function __construct($baseUrl)
     {
-        $this->accessKey = $accessKey;
         $this->baseUrl = rtrim($baseUrl, '/');
         $this->userAgent = 'Mozilla/5.0 (compatible; TripayBot/1.0; +https://tripay.co.id/developer)';
     }
@@ -27,13 +24,13 @@ class Request
         return $this;
     }
 
-    public function withRawBody(array $payloads)
+    public function withRawBody($payloads)
     {
         $this->payloads = $payloads;
         return $this;
     }
 
-    public function withJsonBody(array $payloads)
+    public function withJsonBody($payloads)
     {
         $this->payloads = json_encode($payloads);
         return $this;
@@ -51,14 +48,14 @@ class Request
         return $this;
     }
 
-    public function get($endpoint)
+    public function get($endpoint, array $queryString = [])
     {
-        return $this->request('get', $endpoint);
+        return $this->request('get', $endpoint, $queryString);
     }
 
-    public function post($endpoint)
+    public function post($endpoint, array $queryString = [])
     {
-        return $this->request('post', $endpoint);
+        return $this->request('post', $endpoint, $queryString);
     }
 
     public function delete($endpoint)
@@ -66,12 +63,10 @@ class Request
         return $this->request('delete', $endpoint, $this->payloads);
     }
 
-    public function request($method, $endpoint)
+    public function request($method, $endpoint, array $queryString = [])
     {
         $endpoint = rtrim(trim($endpoint, '/'), '&');
-        $endpoint = $this->baseUrl . '/' . $endpoint;
-        // https://foo.com/bar?key=xxx, https://foo.com/bar?baz=qux&key=xxx
-        $endpoint .= ((false !== strpos($endpoint, '?')) ? '&' : '?') . 'key=' . $this->accessKey;
+        $endpoint = $this->baseUrl . '/' . $endpoint . '?' . http_build_query($queryString);
         $method = strtoupper($method);
 
         $ch = curl_init();
@@ -167,7 +162,7 @@ class Request
             'endpoint' => $endpoint,
             'error' => false,
             'message' => 'Request successful',
-            'data' => $data,
+            'data' => null,
             'raw' => $raw,
         ];
 
@@ -177,5 +172,10 @@ class Request
         }
 
         return $results;
+    }
+
+    public function getBaseUrl()
+    {
+        return $this->baseUrl;
     }
 }

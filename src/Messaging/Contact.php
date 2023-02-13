@@ -2,7 +2,7 @@
 
 namespace Esyede\Wabot\Messaging;
 
-use Esyede\Wabot\Http\Initiator as HttpInitiator;
+use Esyede\Wabot\Connections\Connection;
 use Esyede\Wabot\Http\Request as HttpRequest;
 use Esyede\Wabot\Helpers\Common;
 use Closure;
@@ -10,15 +10,16 @@ use stdClass;
 
 class Contact
 {
-    private $initiator;
+    private $connection;
     private $request;
+    private $fullName;
     private $phoneNumber;
     private $displayName;
     private $organizationName;
 
-    public function __construct(HttpInitiator $initiator, HttpRequest $request)
+    public function __construct(Connection $connection, HttpRequest $request)
     {
-        $this->initiator = $initiator;
+        $this->connection = $connection;
         $this->request = $request;
     }
 
@@ -67,6 +68,6 @@ class Contact
         return $this->request
             ->withRawBody(json_encode($payloads))
             ->withCallback($callback)
-            ->post('message/contact');
+            ->post('message/contact', ['key' => $this->connection->getDeviceKey()]);
     }
 }

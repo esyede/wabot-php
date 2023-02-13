@@ -2,7 +2,7 @@
 
 namespace Esyede\Wabot\Messaging;
 
-use Esyede\Wabot\Http\Initiator as HttpInitiator;
+use Esyede\Wabot\Connections\Connection;
 use Esyede\Wabot\Http\Request as HttpRequest;
 use Esyede\Wabot\Helpers\Common;
 use Closure;
@@ -10,15 +10,15 @@ use stdClass;
 
 class Template
 {
-    private $initiator;
+    private $connection;
     private $request;
     private $headerTextCaption;
     private $buttons = [];
     private $footerTextCaption;
 
-    public function __construct(HttpInitiator $initiator, HttpRequest $request)
+    public function __construct(Connection $connection, HttpRequest $request)
     {
-        $this->initiator = $initiator;
+        $this->connection = $connection;
         $this->request = $request;
     }
 
@@ -79,6 +79,6 @@ class Template
             ->withHeader('Content-Type', 'application/json')
             ->withJsonBody($payloads)
             ->withCallback($callback)
-            ->post('message/button');
+            ->post('message/button', ['key' => $this->connection->getDeviceKey()]);
     }
 }

@@ -11,10 +11,10 @@ class Row
 
     public function add($title, $description)
     {
-        $row = new stdClass;
-        $row->title = $title;
-        $row->description = $description;
-        $row->rowId = $this->idCounter;
+        $rows = new stdClass;
+        $rows->title = $title;
+        $rows->description = $description;
+        $rows->rowId = $this->idCounter;
 
         $this->rows[$this->idCounter] = $rows;
         $this->idCounter++;

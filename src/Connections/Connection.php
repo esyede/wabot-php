@@ -7,79 +7,88 @@ use Closure;
 
 class Connection
 {
-    private $accessKey;
+    private $deviceKey;
     private $request;
 
-    public function __construct($accessKey, $baseUrl)
+    public function __construct($deviceKey, $baseUrl)
     {
-        $this->accessKey = $accessKey;
-        $this->request = new HttpRequest($accessKey, $baseUrl);
+        $this->deviceKey = $deviceKey;
+        $this->request = new HttpRequest($baseUrl);
     }
 
-    public function scanQr($sleep = 3, Closure $callback = null)
+
+    public function init(array $queryString = [], $sleep = 3, Closure $callback = null)
     {
         sleep((int) $sleep);
 
+        $queryString['key'] = $this->deviceKey;
         return $this->request
             ->withCallback($callback)
-            ->get('instance/qr');
+            ->get('instance/init', $queryString);
     }
 
-    public function getQrBase64($sleep = 3, Closure $callback = null)
+    public function scanQr(array $queryString = [], $sleep = 3, Closure $callback = null)
     {
         sleep((int) $sleep);
 
+        $queryString['key'] = $this->getDeviceKey();
         return $this->request
             ->withCallback($callback)
-            ->get('instance/qrbase64');
+            ->get('instance/qr', $queryString);
     }
 
-    public function getInfo(Closure $callback = null)
+    public function getQrBase64(array $queryString = [], $sleep = 3, Closure $callback = null)
     {
+        sleep((int) $sleep);
+
+        $queryString['key'] = $this->getDeviceKey();
         return $this->request
             ->withCallback($callback)
-            ->get('instance/info');
+            ->get('instance/qrbase64', $queryString);
     }
 
-    public function restore(array $deviceKeys, Closure $callback = null)
+    public function getInfo(array $queryString = [], Closure $callback = null)
     {
-        $deviceKeys = array_values($deviceKeys);
-        $deviceKeys = implode(',', $deviceKeys);
-
+        $queryString['key'] = $this->getDeviceKey();
         return $this->request
             ->withCallback($callback)
-            ->get('instance/restore?only_keys=' . $deviceKeys);
+            ->get('instance/info', $queryString);
+    }
+
+    public function restore(array $queryString = [], Closure $callback = null)
+    {
+        $queryString['key'] = $this->getDeviceKey();
+        return $this->request
+            ->withCallback($callback)
+            ->get('instance/restore', $queryString);
     }
 
     public function restoreAll(Closure $callback = null)
     {
+        $queryString['key'] = $this->getDeviceKey();
         return $this->request
             ->withCallback($callback)
             ->get('instance/restore');
     }
 
-    public function delete(Closure $callback = null)
+    public function delete(array $queryString = [], Closure $callback = null)
     {
+        $queryString['key'] = $this->getDeviceKey();
         return $this->request
             ->withCallback($callback)
-            ->delete('instance/delete');
+            ->delete('instance/delete', $queryString);
     }
 
-    public function logout(Closure $callback = null)
+    public function logout(array $queryString =[], Closure $callback = null)
     {
+        $queryString['key'] = $this->getDeviceKey();
         return $this->request
             ->withCallback($callback)
-            ->delete('instance/logout');
+            ->delete('instance/logout', $queryString);
     }
 
-    public function updateWebhook($webhookUrl, array $webhookEvents)
+    public function getDeviceKey()
     {
-        return $this->request
-            ->withHeader('Content-Type', 'application/x-www-form-urlencoded')
-            ->withUrlEncodedBody([
-                'webhook_url' => $webhookUrl,
-                'webhook_events' => implode(',', array_values($webhookEvents)),
-            ])
-            ->post('/instance/webhook');
+        return $this->deviceKey;
     }
 }

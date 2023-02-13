@@ -2,15 +2,15 @@
 
 namespace Esyede\Wabot\Messaging;
 
-use Esyede\Wabot\Http\Initiator as HttpInitiator;
+use Esyede\Wabot\Connections\Connection;
 use Esyede\Wabot\Http\Request as HttpRequest;
-use Esyede\Wabot\Helpers\Common;
+use Esyede\Wabot\Messaging\MessageLists\Section;
 use Closure;
 use stdClass;
 
 class MessageList
 {
-    private $initiator;
+    private $connection;
     private $request;
     private $buttonText;
     private $text;
@@ -18,9 +18,9 @@ class MessageList
     private $description;
     private $sections = [];
 
-    public function __construct(HttpInitiator $initiator, HttpRequest $request)
+    public function __construct(Connection $connection, HttpRequest $request)
     {
-        $this->initiator = $initiator;
+        $this->connection = $connection;
         $this->request = $request;
     }
 
@@ -50,7 +50,7 @@ class MessageList
 
     public function withSections(Section $sections)
     {
-        $this->sections = $sections->toArray();
+        $this->sections = $sections->all();
         return $this;
     }
 
@@ -72,6 +72,6 @@ class MessageList
         return $this->request
             ->withRawBody(json_encode($payloads))
             ->withCallback($callback)
-            ->post('message/list');
+            ->post('message/list', ['key' => $this->connection->getDeviceKey()]);
     }
 }

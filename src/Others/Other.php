@@ -2,19 +2,19 @@
 
 namespace Esyede\Wabot\Others;
 
-use Esyede\Wabot\Http\Initiator as HttpInitiator;
+use Esyede\Wabot\Connections\Connection;
 use Esyede\Wabot\Http\Request as HttpRequest;
 use Esyede\Wabot\Helpers\Common;
 use Closure;
 
 class Other
 {
-    private $initiator;
+    private $connection;
     private $request;
 
-    public function __construct(HttpInitiator $initiator, HttpRequest $request)
+    public function __construct(Connection $connection, HttpRequest $request)
     {
-        $this->initiator = $initiator;
+        $this->connection = $connection;
         $this->request = $request;
     }
 
@@ -24,7 +24,10 @@ class Other
 
         return $this->request
             ->withCallback($callback)
-            ->get('misc/onwhatsapp?id=' . $phoneNumber);
+            ->get('misc/onwhatsapp', [
+                'id' => $phoneNumber,
+                'key' => $this->connection->getDeviceKey(),
+            ]);
     }
 
     public function downloadProfilePicture($phoneNumber, Closure $callback = null)
@@ -33,7 +36,10 @@ class Other
 
         return $this->request
             ->withCallback($callback)
-            ->get('misc/downProfile?id=' . $phoneNumber);
+            ->get('misc/downProfile', [
+                'id' => $phoneNumber,
+                'key' => $this->connection->getDeviceKey(),
+            ]);
     }
 
     public function getUserStatus($phoneNumber, Closure $callback = null)
@@ -42,7 +48,10 @@ class Other
 
         return $this->request
             ->withCallback($callback)
-            ->get('misc/getStatus?id=' . $phoneNumber);
+            ->get('misc/getStatus', [
+                'id' => $phoneNumber,
+                'key' => $this->connection->getDeviceKey(),
+            ]);
     }
 
     public function blockUser($phoneNumber, Closure $callback = null)
@@ -51,6 +60,9 @@ class Other
 
         return $this->request
             ->withCallback($callback)
-            ->get('misc/blockUser?id=' . $phoneNumber);
+            ->get('misc/blockUser', [
+                'id' => $phoneNumber,
+                'key' => $this->connection->getDeviceKey(),
+            ]);
     }
 }

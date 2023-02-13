@@ -2,19 +2,19 @@
 
 namespace Esyede\Wabot\Groups;
 
-use Esyede\Wabot\Http\Initiator as HttpInitiator;
+use Esyede\Wabot\Connections\Connection;
 use Esyede\Wabot\Http\Request as HttpRequest;
 use Esyede\Wabot\Helpers\Common;
 use Closure;
 
 class Group
 {
-    private $initiator;
+    private $connection;
     private $request;
 
-    public function __construct(HttpInitiator $initiator, HttpRequest $request)
+    public function __construct(Connection $connection, HttpRequest $request)
     {
-        $this->initiator = $initiator;
+        $this->connection = $connection;
         $this->request = $request;
     }
 
@@ -33,13 +33,13 @@ class Group
             ->withHeader('Content-Type', 'application/json')
             ->withJsonBody($payloads)
             ->withCallback($callback)
-            ->post('group/create');
+            ->post('group/create', ['key' => $this->connection->getDeviceKey()]);
     }
 
     public function listAll(Closure $callback = null)
     {
         return $this->request
             ->withCallback($callback)
-            ->get('group/listall');
+            ->get('group/listall', ['key' => $this->connection->getDeviceKey()]);
     }
 }

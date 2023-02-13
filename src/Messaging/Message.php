@@ -2,7 +2,7 @@
 
 namespace Esyede\Wabot\Messaging;
 
-use Esyede\Wabot\Http\Initiator as HttpInitiator;
+use Esyede\Wabot\Connections\Connection;
 use Esyede\Wabot\Http\Request as HttpRequest;
 use Esyede\Wabot\Helpers\Common;
 use Closure;
@@ -10,12 +10,12 @@ use CURLFile;
 
 class Message
 {
-    private $initiator;
+    private $connection;
     private $request;
 
-    public function __construct(HttpInitiator $initiator, HttpRequest $request)
+    public function __construct(Connection $connection, HttpRequest $request)
     {
-        $this->initiator = $initiator;
+        $this->connection = $connection;
         $this->request = $request;
     }
 
@@ -28,7 +28,7 @@ class Message
             ->withHeader('Content-Type', 'application/x-www-form-urlencoded')
             ->withUrlEncodedBody($payloads)
             ->withCallback($callback)
-            ->post('message/text');
+            ->post('message/text', ['key' => $this->connection->getDeviceKey()]);
     }
 
     public function image($phoneNumber, $imagePathAbsolute, $captionText, Closure $callback = null)
@@ -43,7 +43,7 @@ class Message
         return $this->request
             ->withRawBody($payloads)
             ->withCallback($callback)
-            ->post('message/image');
+            ->post('message/image', ['key' => $this->connection->getDeviceKey()]);
     }
 
     public function video($phoneNumber, $videoPath, $captionText, Closure $callback = null)
@@ -58,7 +58,7 @@ class Message
         return $this->request
             ->withRawBody($payloads)
             ->withCallback($callback)
-            ->post('message/video');
+            ->post('message/video', ['key' => $this->connection->getDeviceKey()]);
     }
 
     public function audio($phoneNumber, $audioPath, Closure $callback = null)
@@ -72,7 +72,7 @@ class Message
         return $this->request
             ->withRawBody($payloads)
             ->withCallback($callback)
-            ->post('message/audio');
+            ->post('message/audio', ['key' => $this->connection->getDeviceKey()]);
     }
 
     public function document($phoneNumber, $documentPath, Closure $callback = null)
@@ -86,7 +86,7 @@ class Message
         return $this->request
             ->withRawBody($payloads)
             ->withCallback($callback)
-            ->post('message/doc');
+            ->post('message/doc', ['key' => $this->connection->getDeviceKey()]);
     }
 
     public function mediaUrl($phoneNumber, $fileUrl, $captionText, Closure $callback = null)
@@ -103,6 +103,6 @@ class Message
         return $this->request
             ->withRawBody($payloads)
             ->withCallback($callback)
-            ->post('message/mediaurl');
+            ->post('message/mediaurl', ['key' => $this->connection->getDeviceKey()]);
     }
 }
