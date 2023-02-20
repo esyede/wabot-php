@@ -8,7 +8,7 @@ class Request
 {
     private $baseUrl;
     private $headers = [];
-    private $payloads;
+    private $payloads = [];
     private $callback;
     private $userAgent;
 
