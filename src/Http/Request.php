@@ -58,9 +58,9 @@ class Request
         return $this->request('post', $endpoint, $queryString);
     }
 
-    public function delete($endpoint)
+    public function delete($endpoint, array $queryString = [])
     {
-        return $this->request('delete', $endpoint, $this->payloads);
+        return $this->request('delete', $endpoint, $queryString);
     }
 
     public function request($method, $endpoint, array $queryString = [])
@@ -90,6 +90,7 @@ class Request
 
             case 'DELETE':
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $this->payloads);
                 break;
 
             default:
