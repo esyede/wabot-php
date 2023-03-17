@@ -106,17 +106,65 @@ class Message
             ->post('message/mediaurl', ['key' => $this->connection->getDeviceKey()]);
     }
     
-    public function urlButton($phoneNumber, $url, $displayText, $text = null, $footerText = null, Closure $callback = null)
+    public function urlButton($recipientPhoneNumber, $url, $displayText, $text = null, $footerText = null, Closure $callback = null)
     {
-        $phoneNumber = Common::toIndonesianPhonePrefix($phoneNumber);
+        $recipientPhoneNumber = Common::toIndonesianPhonePrefix($recipientPhoneNumber);
         $payloads = [
-            'id' => $phoneNumber,
+            'id' => $recipientPhoneNumber,
             'btndata' => [
                 'buttons' => [
                     [
                         'type' => 'urlButton',
                         'title' => $displayText,
                         'payload' => $url,
+                    ]
+                ],
+                'text' => $text,
+                'footerText' => $footerText,
+             ]
+        ];
+
+        return $this->request
+            ->withRawBody($payloads)
+            ->withCallback($callback)
+            ->post('message/button', ['key' => $this->connection->getDeviceKey()]);
+    }
+    
+    public function callButton($recipientPhoneNumber, $phoneNumber, $displayText, $text = null, $footerText = null, Closure $callback = null)
+    {
+        $recipientPhoneNumber = Common::toIndonesianPhonePrefix($recipientPhoneNumber);
+        $phoneNumber = Common::toIndonesianPhonePrefix($phoneNumber);
+        $payloads = [
+            'id' => $recipientPhoneNumber,
+            'btndata' => [
+                'buttons' => [
+                    [
+                        'type' => 'callButton',
+                        'title' => $displayText,
+                        'payload' => $phoneNumber,
+                    ]
+                ],
+                'text' => $text,
+                'footerText' => $footerText,
+             ]
+        ];
+
+        return $this->request
+            ->withRawBody($payloads)
+            ->withCallback($callback)
+            ->post('message/button', ['key' => $this->connection->getDeviceKey()]);
+    }
+    
+    public function replyButton($recipientPhoneNumber, $displayText, $text = null, $footerText = null, Closure $callback = null)
+    {
+        $recipientPhoneNumber = Common::toIndonesianPhonePrefix($recipientPhoneNumber);
+        $payloads = [
+            'id' => $recipientPhoneNumber,
+            'btndata' => [
+                'buttons' => [
+                    [
+                        'type' => 'replyButton',
+                        'title' => $displayText,
                     ]
                 ],
                 'text' => $text,
