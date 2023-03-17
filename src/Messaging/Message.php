@@ -30,6 +30,25 @@ class Message
             ->withCallback($callback)
             ->post('message/text', ['key' => $this->connection->getDeviceKey()]);
     }
+    
+    // Use button endpoint but without buttons payload
+    public function textWithFooter($recipientPhoneNumber, $text, $footerText, Closure $callback = null)
+    {
+        $recipientPhoneNumber = Common::toIndonesianPhonePrefix($recipientPhoneNumber);
+        $payloads = [
+            'id' => $recipientPhoneNumber,
+            'btndata' => [
+                'buttons' => [],
+                'text' => $text,
+                'footerText' => $footerText,
+             ]
+        ];
+
+        return $this->request
+            ->withRawBody($payloads)
+            ->withCallback($callback)
+            ->post('message/button', ['key' => $this->connection->getDeviceKey()]);
+    }
 
     public function image($phoneNumber, $imagePathAbsolute, $captionText, Closure $callback = null)
     {
