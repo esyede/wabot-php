@@ -105,4 +105,28 @@ class Message
             ->withCallback($callback)
             ->post('message/mediaurl', ['key' => $this->connection->getDeviceKey()]);
     }
+    
+    public function urlButton($phoneNumber, $url, $displayText, $text = null, $footerText = null, Closure $callback = null)
+    {
+        $phoneNumber = Common::toIndonesianPhonePrefix($phoneNumber);
+        $payloads = [
+            'id' => $phoneNumber,
+            'btndata' => [
+                'buttons' => [
+                    [
+                        'type' => 'urlButton',
+                        'title' => $displayText,
+                        'payload' => $url,
+                    ]
+                ],
+                'text' => $text,
+                'footerText' => $footerText,
+             ]
+        ];
+
+        return $this->request
+            ->withRawBody($payloads)
+            ->withCallback($callback)
+            ->post('message/button', ['key' => $this->connection->getDeviceKey()]);
+    }
 }
