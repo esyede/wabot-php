@@ -45,7 +45,8 @@ class Message
         ];
 
         return $this->request
-            ->withRawBody($payloads)
+            ->withHeader('Content-Type', 'application/json')
+            ->withJsonBody($payloads)
             ->withCallback($callback)
             ->post('message/button', ['key' => $this->connection->getDeviceKey()]);
     }
@@ -144,7 +145,8 @@ class Message
         ];
 
         return $this->request
-            ->withRawBody($payloads)
+            ->withHeader('Content-Type', 'application/json')
+            ->withJsonBody($payloads)
             ->withCallback($callback)
             ->post('message/button', ['key' => $this->connection->getDeviceKey()]);
     }
@@ -169,7 +171,8 @@ class Message
         ];
 
         return $this->request
-            ->withRawBody($payloads)
+            ->withHeader('Content-Type', 'application/json')
+            ->withJsonBody($payloads)
             ->withCallback($callback)
             ->post('message/button', ['key' => $this->connection->getDeviceKey()]);
     }
@@ -192,7 +195,8 @@ class Message
         ];
 
         return $this->request
-            ->withRawBody($payloads)
+            ->withHeader('Content-Type', 'application/json')
+            ->withJsonBody($payloads)
             ->withCallback($callback)
             ->post('message/button', ['key' => $this->connection->getDeviceKey()]);
     }
